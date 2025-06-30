@@ -15,7 +15,8 @@ import sys
 
 class EbookLibrary:
     def __init__(self):
-        self.base_dir = Path.cwd()
+        #Library location
+        self.base_dir = Path.home() / "01Library"
         self.books_dir = self.base_dir / "books"
         self.database_dir = self.base_dir / "database"
         self.db_file = self.database_dir / "library.json"
@@ -27,11 +28,24 @@ class EbookLibrary:
     
     def setup_directories(self):
         """Create necessary directories if they don't exist"""
-        self.books_dir.mkdir(exist_ok=True)
-        self.database_dir.mkdir(exist_ok=True)
-        
-        # Create lists subdirectories in books
-        (self.books_dir / "default").mkdir(exist_ok=True)
+        try:
+            # Create base directory first
+            self.base_dir.mkdir(exist_ok=True, parents=True)
+            self.books_dir.mkdir(exist_ok=True)
+            self.database_dir.mkdir(exist_ok=True)
+            
+            # Create lists subdirectories in books
+            (self.books_dir / "default").mkdir(exist_ok=True)
+            
+            print(f"📁 Library location: {self.base_dir}")
+            
+        except PermissionError:
+            print(f"❌ Permission denied creating directory: {self.base_dir}")
+            print("Please run with appropriate permissions or choose a different location.")
+            sys.exit(1)
+        except Exception as e:
+            print(f"❌ Error creating directories: {e}")
+            sys.exit(1)
     
     def load_database(self):
         """Load or create the database"""
@@ -64,13 +78,12 @@ class EbookLibrary:
 ║   ░╚════╝░░░╚═╝░░╚══════╝╚═╝╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚═╝░░░╚═╝░░░   ║
 ║                                                                         ║
 ║                    📚 Your Personal E-book Library 📚                   ║
-║                            Author: PedramBHT                            ║                               ║
-║                             Version : 1.0.0                             ║
 ║                                                                         ║
 ╚═════════════════════════════════════════════════════════════════════════╝
         """
         print(ascii_art)
-        print(f"Current List: 📁 {self.current_list}")
+        print(f"📁 Library Path: {self.base_dir}")
+        print(f"📂 Current List: {self.current_list}")
         print("═" * 75)
     
     def display_menu(self):
@@ -392,8 +405,8 @@ Choose an option (1-8): """
             elif choice == '8':
                 print("\n" + "═" * 75)
                 print("👋 Thank you for using 01LIBRARY!")
-                print("📧 For support or feedback: [your-email@example.com]")
-                print("🌟 Star us on GitHub: https://github.com/[your-username]/01library")
+                print("📧 For support or feedback: [pbhtash@gmail.com]")
+                print("🌟 Star us on GitHub: https://github.com/PedramBHT/01library")
                 print("📄 Licensed under MIT - Free and Open Source!")
                 print("═" * 75)
                 break
